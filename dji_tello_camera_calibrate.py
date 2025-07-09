@@ -1,7 +1,7 @@
-# https://learnopencv.com/camera-calibration-using-opencv/
 import time, cv2
 from threading import Thread
 from djitellopy import Tello
+
 
 tello = Tello()
 tello.connect()
@@ -9,12 +9,11 @@ tello.connect()
 keepRecording = True
 tello.streamon()
 frame_read = tello.get_frame_read()
-image_list = []
 
 
 def video_stream():
     global keepRecording
-    global image_list
+    image_count = 0
     
     while keepRecording:
         
@@ -23,21 +22,22 @@ def video_stream():
         if frame is not None and frame.size > 0:
             
             cv2.imshow("Tello Live Stream", frame)
-            image_list.append(frame)
+            cv2.imwrite(f"calibration_img{image_count}.jpg", frame)
+            image_count += 1
             
         key = cv2.waitKey(1) & 0xFF
         
         if key == ord('q'):
             keepRecording = False
             
-        time.sleep(1)
+        time.sleep(5)
     cv2.destroyAllWindows()
 
 recorder = Thread(target=video_stream)
 recorder.start()
 
 try:
-    time.sleep(15)  
+    time.sleep(60)  
 finally:
     keepRecording = False
     recorder.join()
