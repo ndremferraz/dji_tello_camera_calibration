@@ -1,3 +1,4 @@
+# https://learnopencv.com/camera-calibration-using-opencv/
 import time, cv2
 from threading import Thread
 from djitellopy import Tello
